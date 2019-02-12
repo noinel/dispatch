@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<title>template</title>
+	</head>
+	<body>
+		<div>
+			<h3> -number : {{ iot_number }} </h3>
+			{% if not session.logged_in %}
+				<h3><a href="{{ url_for('login')}}">LogIn</a> please. </h3>
+
+			{% else %}
+				<h3><a href="{{ url_for('logout')}}">LogOut</a> </h3>
+			{% endif %}
+				<h3> - IoT </h3>
+			{% for i in iot_member %}
+				<h3> {{i}} </h3>
+				{% if i == "jusuhong" %}
+					<h5> {{i}}handsome</h5>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</body>
+</html>
+				
