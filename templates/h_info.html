@@ -7,5 +7,14 @@
         <td> {{ value }} </td>
     </tr>
     {% endfor %}
+     </br>
+     <TR>
+         <TD colspan="2" align="center">
+             <button id="update" class="button" onclick="window.location.href = '/info'">UPDATE</button>
+         </TD>
+     </TR>
 </table>
+<button id="led_on" class="button" onclick="window.location.href='/led/on'">on</button>
+<button id="led_off" class="button" onclick="window.location.href='/led/off'">off</button>
+<button id="led_off" class="button" onclick="window.location.href='/led/toggle'">toggle</button>
 {% endblock %}

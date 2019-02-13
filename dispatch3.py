@@ -5,13 +5,18 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 from flask import Flask, Response, make_response, url_for, render_template, request,session, redirect
-
 import requests
 
 from  bs4 import BeautifulSoup
 
 from subprocess import PIPE, Popen 
 import psutil
+
+import RPi.GPIO as GP
+ledpin = 18
+GP.setmode(GP.BCM)
+GP.setup(ledpin, GP.OUT)
+
 
 app = Flask(__name__)
 app.debug = True
@@ -160,8 +165,15 @@ def iot_sys_info():
 							"디스크 사용률":disk_percent}
 	return render_template("h_info.html", hw_info =iot_sys_info_dict)
 
-
-
+@app.route("/led/<led_state>")
+def led_onoff(led_state):
+	if "on" == led_state:
+		GP.output(ledpin,GP.LOW)
+	if "off" == led_state:
+		GP.output(ledpin,GP.HIGH)
+	if "toggle" == led_state:
+		GP.output(ledpin, not GP.input(ledpin))
+	return iot_sys_info() 
 
 
 
