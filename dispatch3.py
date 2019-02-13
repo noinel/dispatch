@@ -8,7 +8,6 @@ import requests
 from  bs4 import BeautifulSoup
 app = Flask(__name__)
 app.debug = True
-
 @app.route("/login_test")
 def login_test():
 	return render_template('login.html')
@@ -77,13 +76,18 @@ def template_test(iot_number = None):
 @app.route("/iot")
 @app.route("/iot/")
 def iot():
-	result_req = requests.get("http://btc.ac.kr/p/j=41")
+#	result_req = requests.get("http://btc.ac.kr/p/j=41")
+
+#	result_req = requests.get("https://media.daum.net/ranking/bestreply/")
+	result_req = requests.get("https://naver.com/")
 	result_txt = result_req.text
 	result_head = result_req.headers
 	result_status = result_req.status_code
 	if True == result_req.ok:
-		obj_soup = BeautifulSoup(result_txt, "html_parser")
-		iot_data =obj_soup.select("table.ej-tbj>tbody>tr>td>a")
+		obj_soup = BeautifulSoup(result_txt , "html.parser")
+#		iot_data =obj_soup.select("table.ej-tbj>tbody>tr>td>a")
+#		iot_data =obj_soup.select("div.cont_thumb>strong.tit_thumb>a")
+		iot_data =obj_soup.select("div#news_cast>div.area_newstop>div.cast_flash>h3.cf_tit>a")
 		return render_template("main.html",iot_data = iot_data)
 	else:
 		return "가져오기 오류"
