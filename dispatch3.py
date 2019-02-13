@@ -108,6 +108,11 @@ def calcul(iot_num = None):
 
 	return redirect(url_for("iotgugu",iot_num=cal_num))
 
+@app.route("/test_temp")
+def iot_test_temp():
+	iot_string ="파이썬 ㄷㄷㄷㄷㄷ"
+	iot_list = [1000, 1414, 4141,2222, 1455]
+	return render_template("template.html", my_string = iot_string, my_list = iot_list)
 
 @app.route("/")
 def IoT_http_prepost_response():
