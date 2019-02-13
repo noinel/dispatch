@@ -3,11 +3,20 @@
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
+
 from flask import Flask, Response, make_response, url_for, render_template, request,session, redirect
+
 import requests
+
 from  bs4 import BeautifulSoup
+
+from subprocess import PIPE, Popen 
+import psutil
+
 app = Flask(__name__)
 app.debug = True
+
+#===========================================================
 @app.route("/login_test")
 def login_test():
 	return render_template('login.html')
@@ -35,11 +44,12 @@ def board_list_get():
 @app.route('/board', methods =['POST'])
 def board_list_post():
 	return"POST"
+
 @app.route("/login", methods=["POST","GET"])
 def login():
 	if request.method == "POST":
 		session_check = request.form.get("uname", None)	
-		if None == session_check:
+		if None         == session_check:
 			if "logged_in" in session:
 				if True == session["logged_in"]:
 					return session["uname"] + "님 환영합니다"
@@ -60,6 +70,7 @@ def login():
 
 				return	session["uname"] +"님 환영 합니다"
 		return login_test()
+
 app.secret_key = "iot_key"
 
 @app.route("/logout")
@@ -67,12 +78,14 @@ def logout():
 	session["logged_in"] - False
 	session.pop("uname", None)
 	return "로그아웃 되셨습니다"
+
 @app.route("/template")
 @app.route("/template/")
 @app.route("/template/<iot_number>")
 def template_test(iot_number = None):
 	iot_member = ["최성주", "jusuhong","최재원"]
 	return render_template( "template_test.html",iot_number = iot_number, iot_member=iot_member)
+
 @app.route("/iot")
 @app.route("/iot/")
 def iot():
@@ -91,11 +104,13 @@ def iot():
 		return render_template("main.html",iot_data = iot_data)
 	else:
 		return "가져오기 오류"
+
 @app.route("/gugu")
 @app.route("/gugu/")
 @app.route("/gugu/<int:iot_num>")
 def iotgugu(iot_num=None):
 	return render_template("gugu.html", iot_num = iot_num)
+
 @app.route("/calcul", methods = ["POST"])
 def calcul(iot_num = None):
 	if request.method == "POST":
@@ -113,6 +128,43 @@ def iot_test_temp():
 	iot_string ="파이썬 ㄷㄷㄷㄷㄷ"
 	iot_list = [1000, 1414, 4141,2222, 1455]
 	return render_template("template.html", my_string = iot_string, my_list = iot_list)
+
+def iot_measure_temp(): 
+	process = Popen(["vcgencmd", "measure_temp"], stdout=PIPE) 
+	output, _error = process.communicate() 
+	return float(output[output.index("=") + 1:output.rindex("'")])
+
+@app.route("/info")
+def iot_cpu():
+#========================================================
+	
+	cpu_temp            = iot_measure_temp()
+	cpu_percent         = psutil.cpu_percent() 
+	cpu_count           = psutil.cpu_count()
+#=======================================================
+
+	memory              = psutil.virtual_memory()
+	mem_total           = memory.total
+	mem_percent			= memory.percent
+#=======================================================
+
+	hd_disk             = psutil.disk_usage("/")
+	disk_percent		= hd_disk.percent
+#======================================================
+
+	iot_sys_info_dict = { "cpu 온도":cpu_temp,
+							"cpu 사용률":cpu_percent,
+							"cpu 코어 갯수":cpu_count,
+							"전체 메모리":mem_total,
+							"메모리 사용률":mem_percent,
+							"디스크 사용률":disk_percent}
+	return render_template("h_info.html", hw_info =iot_sys_info_dict)
+
+
+
+
+
+
 
 @app.route("/")
 def IoT_http_prepost_response():
