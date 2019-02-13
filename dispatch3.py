@@ -135,7 +135,7 @@ def iot_measure_temp():
 	return float(output[output.index("=") + 1:output.rindex("'")])
 
 @app.route("/info")
-def iot_cpu():
+def iot_sys_info():
 #========================================================
 	
 	cpu_temp            = iot_measure_temp()
